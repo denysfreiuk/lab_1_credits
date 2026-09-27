@@ -1,5 +1,7 @@
 package com.creditadvisor.model;
 
+import com.creditadvisor.model.feature.EarlyRepayable;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -12,7 +14,7 @@ import java.util.List;
  * outstanding balance, which shrinks every month. Unlike an annuity, the
  * monthly payment therefore decreases over the term.
  */
-public final class DifferentiatedCreditOffer extends CreditOffer {
+public final class DifferentiatedCreditOffer extends CreditOffer implements EarlyRepayable {
 
     private static final int MONTHS_IN_YEAR = 12;
     private static final int MONEY_SCALE = 2;
@@ -56,5 +58,45 @@ public final class DifferentiatedCreditOffer extends CreditOffer {
         }
 
         return List.copyOf(schedule);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Since the principal is repaid in equal portions, the outstanding
+     * balance after {@code monthsAlreadyPaid} months is simply the
+     * principal minus that many portions. The remaining interest, with and
+     * without the early repayment, is then read off a temporary
+     * differentiated offer built for the remaining term — reusing this
+     * class's own schedule calculation.
+     */
+    @Override
+    public BigDecimal calculateEarlyRepaymentSavings(int monthsAlreadyPaid, BigDecimal earlyRepaymentAmount) {
+        EarlyRepayable.validateEarlyRepaymentArguments(monthsAlreadyPaid, getTermInMonths(), earlyRepaymentAmount);
+
+        int remainingMonths = getTermInMonths() - monthsAlreadyPaid;
+        BigDecimal remainingBalance = calculateRemainingBalanceAfter(monthsAlreadyPaid);
+
+        BigDecimal interestRemainingWithoutEarlyRepayment = remainingTermOffer(remainingBalance, remainingMonths)
+                .calculateOverpaymentAmount();
+
+        BigDecimal reducedBalance = remainingBalance.subtract(earlyRepaymentAmount).max(BigDecimal.ZERO);
+        BigDecimal interestRemainingAfterEarlyRepayment = reducedBalance.signum() == 0
+                ? BigDecimal.ZERO
+                : remainingTermOffer(reducedBalance, remainingMonths).calculateOverpaymentAmount();
+
+        return interestRemainingWithoutEarlyRepayment.subtract(interestRemainingAfterEarlyRepayment)
+                .max(BigDecimal.ZERO);
+    }
+
+    private BigDecimal calculateRemainingBalanceAfter(int monthsAlreadyPaid) {
+        BigDecimal principalPortion = getPrincipalAmount().divide(
+                BigDecimal.valueOf(getTermInMonths()), MONEY_SCALE, RoundingMode.HALF_UP);
+        return getPrincipalAmount().subtract(principalPortion.multiply(BigDecimal.valueOf(monthsAlreadyPaid)));
+    }
+
+    private DifferentiatedCreditOffer remainingTermOffer(BigDecimal principal, int remainingMonths) {
+        return new DifferentiatedCreditOffer(getBank(), getOfferName(), getPurpose(),
+                principal, getAnnualInterestRatePercent(), remainingMonths);
     }
 }

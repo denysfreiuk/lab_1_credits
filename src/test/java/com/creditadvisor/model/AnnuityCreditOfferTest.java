@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AnnuityCreditOfferTest {
@@ -56,5 +57,43 @@ class AnnuityCreditOfferTest {
 
         assertEquals(0, new BigDecimal("2657.56").compareTo(offer.calculateOverpaymentAmount()));
         assertTrue(offer.calculateOverpaymentAmount().signum() > 0);
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsMatchesReducedInterestOverRemainingTerm() {
+        AnnuityCreditOffer offer = new AnnuityCreditOffer(PRIVAT_BANK, "Consumer Annuity", CreditPurpose.CONSUMER,
+                new BigDecimal("100000"), new BigDecimal("12"), 12);
+
+        BigDecimal savings = offer.calculateEarlyRepaymentSavings(6, new BigDecimal("10000"));
+
+        assertEquals(0, new BigDecimal("352.94").compareTo(savings));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsEqualsAllRemainingInterestOnFullPayoff() {
+        AnnuityCreditOffer offer = new AnnuityCreditOffer(PRIVAT_BANK, "Consumer Annuity", CreditPurpose.CONSUMER,
+                new BigDecimal("100000"), new BigDecimal("12"), 12);
+
+        BigDecimal savings = offer.calculateEarlyRepaymentSavings(6, new BigDecimal("60000"));
+
+        assertEquals(0, new BigDecimal("1817.18").compareTo(savings));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsRejectsMonthsAlreadyPaidOutOfRange() {
+        AnnuityCreditOffer offer = new AnnuityCreditOffer(PRIVAT_BANK, "Consumer Annuity", CreditPurpose.CONSUMER,
+                new BigDecimal("100000"), new BigDecimal("12"), 12);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                offer.calculateEarlyRepaymentSavings(12, new BigDecimal("1000")));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsRejectsNonPositiveAmount() {
+        AnnuityCreditOffer offer = new AnnuityCreditOffer(PRIVAT_BANK, "Consumer Annuity", CreditPurpose.CONSUMER,
+                new BigDecimal("100000"), new BigDecimal("12"), 12);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                offer.calculateEarlyRepaymentSavings(6, BigDecimal.ZERO));
     }
 }

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DifferentiatedCreditOfferTest {
@@ -51,5 +52,43 @@ class DifferentiatedCreditOfferTest {
         assertEquals(0, new BigDecimal("3333.34").compareTo(schedule.get(2)));
         assertEquals(0, new BigDecimal("10000.00").compareTo(offer.calculateTotalCost()));
         assertEquals(0, BigDecimal.ZERO.compareTo(offer.calculateOverpaymentAmount()));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsMatchesReducedInterestOverRemainingTerm() {
+        DifferentiatedCreditOffer offer = new DifferentiatedCreditOffer(PRIVAT_BANK, "Mortgage Differentiated",
+                CreditPurpose.MORTGAGE, new BigDecimal("120000"), new BigDecimal("12"), 12);
+
+        BigDecimal savings = offer.calculateEarlyRepaymentSavings(6, new BigDecimal("10000"));
+
+        assertEquals(0, new BigDecimal("350.00").compareTo(savings));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsEqualsAllRemainingInterestOnFullPayoff() {
+        DifferentiatedCreditOffer offer = new DifferentiatedCreditOffer(PRIVAT_BANK, "Mortgage Differentiated",
+                CreditPurpose.MORTGAGE, new BigDecimal("120000"), new BigDecimal("12"), 12);
+
+        BigDecimal savings = offer.calculateEarlyRepaymentSavings(6, new BigDecimal("60000"));
+
+        assertEquals(0, new BigDecimal("2100.00").compareTo(savings));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsRejectsMonthsAlreadyPaidOutOfRange() {
+        DifferentiatedCreditOffer offer = new DifferentiatedCreditOffer(PRIVAT_BANK, "Mortgage Differentiated",
+                CreditPurpose.MORTGAGE, new BigDecimal("120000"), new BigDecimal("12"), 12);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                offer.calculateEarlyRepaymentSavings(-1, new BigDecimal("1000")));
+    }
+
+    @Test
+    void calculateEarlyRepaymentSavingsRejectsNonPositiveAmount() {
+        DifferentiatedCreditOffer offer = new DifferentiatedCreditOffer(PRIVAT_BANK, "Mortgage Differentiated",
+                CreditPurpose.MORTGAGE, new BigDecimal("120000"), new BigDecimal("12"), 12);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                offer.calculateEarlyRepaymentSavings(6, new BigDecimal("-1")));
     }
 }
