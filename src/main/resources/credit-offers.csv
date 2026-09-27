@@ -1,0 +1,11 @@
+type,bankName,bankCode,bankReliabilityRating,offerName,purpose,principalAmount,annualInterestRatePercent,termInMonths
+ANNUITY,PrivatBank,PB-001,5,Іпотека Стандарт,MORTGAGE,1500000,14.5,240
+DIFFERENTIATED,Oschadbank,OB-002,5,Іпотечний класик,MORTGAGE,1200000,13.9,180
+ANNUITY,Raiffeisen Bank,RF-003,5,Авто Швидкий,AUTO,600000,17.5,60
+DIFFERENTIATED,PUMB,PM-004,4,АвтоКредит Класик,AUTO,550000,16.9,48
+ANNUITY,Universal Bank,UB-005,4,Готівка на все,CONSUMER,100000,34.9,24
+ANNUITY,PrivatBank,PB-001,5,Кредит готівкою,CONSUMER,150000,29.9,36
+DIFFERENTIATED,Oschadbank,OB-002,5,Споживчий класичний,CONSUMER,80000,25.5,18
+CREDIT_LINE,UkrSibbank,US-006,4,Бізнес Лінія,BUSINESS,2000000,19.5,12
+CREDIT_LINE,Alfa-Bank,AB-007,3,Овердрафт для бізнесу,BUSINESS,500000,22.0,6
+ANNUITY,Kredobank,KB-008,3,Бізнес Кредит,BUSINESS,1000000,20.5,36
