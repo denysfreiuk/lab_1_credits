@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileCreditOfferRepositoryTest {
 
-    private static final String HEADER =
-            "type,bankName,bankCode,bankReliabilityRating,offerName,purpose,principalAmount,annualInterestRatePercent,termInMonths";
+    private static final String HEADER = "type,bankName,bankCode,bankReliabilityRating,offerName,"
+            + "purpose,principalAmount,annualInterestRatePercent,termInMonths";
 
     @TempDir
     Path tempDir;
@@ -44,7 +44,8 @@ class FileCreditOfferRepositoryTest {
         Path dataFile = tempDir.resolve("test-offers.csv");
         Files.writeString(dataFile, HEADER + System.lineSeparator()
                 + "ANNUITY,PrivatBank,PB-001,5,Auto Standard,AUTO,60000,15,24" + System.lineSeparator()
-                + "DIFFERENTIATED,Oschadbank,OB-002,5,Mortgage Classic,MORTGAGE,1200000,13.9,180" + System.lineSeparator(),
+                + "DIFFERENTIATED,Oschadbank,OB-002,5,Mortgage Classic,MORTGAGE,1200000,13.9,180"
+                + System.lineSeparator(),
                 StandardCharsets.UTF_8);
 
         CreditOfferRepository repository = new FileCreditOfferRepository(dataFile);

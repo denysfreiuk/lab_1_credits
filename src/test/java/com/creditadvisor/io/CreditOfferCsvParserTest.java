@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CreditOfferCsvParserTest {
 
-    private static final String HEADER =
-            "type,bankName,bankCode,bankReliabilityRating,offerName,purpose,principalAmount,annualInterestRatePercent,termInMonths";
+    private static final String HEADER = "type,bankName,bankCode,bankReliabilityRating,offerName,"
+            + "purpose,principalAmount,annualInterestRatePercent,termInMonths";
 
     private final CreditOfferCsvParser parser = new CreditOfferCsvParser();
 
@@ -45,7 +45,8 @@ class CreditOfferCsvParserTest {
 
     @Test
     void parseLineBuildsDifferentiatedCreditOffer() {
-        CreditOffer offer = parser.parseLine("DIFFERENTIATED,Oschadbank,OB-002,5,Mortgage Classic,MORTGAGE,1200000,13.9,180");
+        CreditOffer offer = parser.parseLine(
+                "DIFFERENTIATED,Oschadbank,OB-002,5,Mortgage Classic,MORTGAGE,1200000,13.9,180");
 
         assertInstanceOf(DifferentiatedCreditOffer.class, offer);
     }

@@ -14,7 +14,8 @@ import java.util.List;
 /**
  * Parses the credit offer initialization data file: a CSV with a header row
  * followed by one row per offer, in the form
- * {@code type,bankName,bankCode,bankReliabilityRating,offerName,purpose,principalAmount,annualInterestRatePercent,termInMonths}.
+ * {@code type,bankName,bankCode,bankReliabilityRating,offerName,}
+ * {@code purpose,principalAmount,annualInterestRatePercent,termInMonths}.
  */
 public final class CreditOfferCsvParser {
 

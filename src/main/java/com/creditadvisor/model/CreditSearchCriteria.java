@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 
 /**
  * What a client is looking for: a credit of a given purpose, for at least a
- * given amount, over a given term. Used to filter the catalog of available
- * {@link CreditOffer}s down to the ones actually relevant to the client.
+ * given amount, over at least a given term. Used to filter the catalog of
+ * available {@link CreditOffer}s down to the ones actually relevant to the
+ * client.
  */
 public final class CreditSearchCriteria {
 
@@ -42,12 +43,14 @@ public final class CreditSearchCriteria {
     }
 
     /**
-     * Whether the given offer matches this request: same purpose, the exact
-     * requested term, and enough principal to cover the desired amount.
+     * Whether the given offer matches this request: same purpose, a term at
+     * least as long as requested (a shorter term means a higher monthly
+     * burden than the client asked for), and enough principal to cover the
+     * desired amount.
      */
     public boolean isSatisfiedBy(CreditOffer offer) {
         return offer.getPurpose() == purpose
-                && offer.getTermInMonths() == desiredTermInMonths
+                && offer.getTermInMonths() >= desiredTermInMonths
                 && offer.getPrincipalAmount().compareTo(desiredAmount) >= 0;
     }
 

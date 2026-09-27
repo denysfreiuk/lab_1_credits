@@ -40,6 +40,7 @@ class ClientTest {
     void calculateMaxAffordableMonthlyPaymentRejectsNonPositiveRatio() {
         Client client = new Client("Ivan Petrenko", new BigDecimal("30000"));
 
-        assertThrows(IllegalArgumentException.class, () -> client.calculateMaxAffordableMonthlyPayment(BigDecimal.ZERO));
+        assertThrows(IllegalArgumentException.class,
+                () -> client.calculateMaxAffordableMonthlyPayment(BigDecimal.ZERO));
     }
 }

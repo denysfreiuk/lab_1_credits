@@ -47,7 +47,7 @@ public final class CreditAdvisorConsoleApp {
 
         CreditPurpose purpose = readPurpose();
         BigDecimal desiredAmount = readPositiveBigDecimal("Бажана сума кредиту: ");
-        int desiredTermInMonths = readPositiveInt("Бажаний строк (у місяцях): ");
+        int desiredTermInMonths = readPositiveInt("Бажаний строк, мінімум (у місяцях): ");
         String fullName = readNonBlankLine("Ваше ім'я: ");
         BigDecimal monthlyIncome = readPositiveBigDecimal("Ваш місячний дохід: ");
 

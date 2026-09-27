@@ -60,12 +60,21 @@ class CreditSearchCriteriaTest {
     }
 
     @Test
-    void isSatisfiedByReturnsFalseWhenTermDiffers() {
+    void isSatisfiedByReturnsFalseWhenOfferTermIsShorterThanDesired() {
         CreditSearchCriteria criteria = new CreditSearchCriteria(CreditPurpose.AUTO, new BigDecimal("50000"), 24);
         CreditOffer offer = new AnnuityCreditOffer(PRIVAT_BANK, "Auto Standard", CreditPurpose.AUTO,
                 new BigDecimal("60000"), new BigDecimal("15"), 12);
 
         assertFalse(criteria.isSatisfiedBy(offer));
+    }
+
+    @Test
+    void isSatisfiedByReturnsTrueWhenOfferTermIsLongerThanDesired() {
+        CreditSearchCriteria criteria = new CreditSearchCriteria(CreditPurpose.AUTO, new BigDecimal("50000"), 24);
+        CreditOffer offer = new AnnuityCreditOffer(PRIVAT_BANK, "Auto Standard", CreditPurpose.AUTO,
+                new BigDecimal("60000"), new BigDecimal("15"), 60);
+
+        assertTrue(criteria.isSatisfiedBy(offer));
     }
 
     @Test
